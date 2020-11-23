@@ -13,6 +13,7 @@
     <li>If build completes run <b>make up</b></li>
     <li>Run <b>make console</b> to enter application console</li>
     <li>In application console run <b>composer install</b></li>
+    <li>Run all defined messenger transports: <b>./bin/console messenger:consume -vv</b></li>
 </ol>
 
 
