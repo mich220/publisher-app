@@ -1,0 +1,102 @@
+version: "3.7"
+services:
+  publisher-web:
+    image: 'nginx:latest'
+    container_name: publisher-web
+    restart: always
+    ports: [80:80]
+    volumes:
+      - ../:/application
+      - ./default/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      service-publisher:
+        aliases:
+          - web
+
+  publisher-app:
+    image: 'localhost:5000/publisher:latest'
+    container_name: publisher-app
+    restart: always
+    working_dir: /application
+    volumes:
+      - ../:/application
+      - ./default/php/.bashrc:/home/dev/.bashrc
+    networks:
+      service-publisher:
+        aliases:
+          - application
+
+  publisher-database:
+    image: mysql:latest
+    container_name: publisher-mysql
+    ports: [3306:3306]
+    environment:
+      MYSQL_DATABASE: 'publisher_db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'user'
+      MYSQL_ROOT_PASSWORD: 'root'
+    volumes:
+      - publisher_db_data:/var/lib/mysql
+    networks:
+      service-publisher:
+        aliases:
+          - database
+
+  publisher-redis:
+    image: redis:5.0.7
+    container_name: publisher-redis
+    restart: on-failure
+    volumes:
+      - publisher_redis:/data
+    networks:
+      service-publisher:
+        aliases:
+          - cache
+
+  publisher-task-state:
+    image: redis:5.0.7
+    container_name: publisher-task-state
+    restart: on-failure
+    volumes:
+      - publisher_task_state:/data
+    networks:
+      service-publisher:
+        aliases:
+          - task-state
+
+  publisher-redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: publisher-commander
+    restart: on-failure
+    environment:
+      REDIS_HOSTS: local:cache:6379,local:task-state:6379
+    networks:
+      service-publisher:
+        aliases:
+          - commander
+    ports: [8081:8081]
+
+  publisher-amqp:
+    image: rabbitmq:3.8-management
+    container_name: publisher-amqp
+    restart: on-failure
+    ports: [ 15672:15672,15692:15692 ]
+    networks:
+      service-publisher:
+        aliases:
+          - queue
+    hostname: publisher-amqp
+    volumes:
+      - publisher_amqp:/var/lib/rabbitmq/mnesia
+    environment:
+      RABBITMQ_DEFAULT_USER: 'user'
+      RABBITMQ_DEFAULT_PASS: 'user'
+
+networks:
+  service-publisher:
+
+volumes:
+  publisher_db_data:
+  publisher_amqp:
+  publisher_redis:
+  publisher_task_state:

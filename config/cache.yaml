@@ -1,0 +1,22 @@
+services:
+
+  app.cache.clients.redis:
+    class: App\Infrastructure\Cache\Redis\RedisClient
+    arguments:
+      $redisUrl: '%env(REDIS_CACHE_URL)%'
+      $expireTTL: 420
+
+  app.task.client.redis:
+    class: App\Infrastructure\Cache\Redis\RedisClient
+    arguments:
+      $redisUrl: '%env(REDIS_TASKS_URL)%'
+
+  app.task.repository.redis:
+    class: App\Infrastructure\Cache\Redis\ResourceRepository
+    arguments:
+      $client: '@app.task.client.redis'
+
+  app.task.manager:
+    class: App\Application\Service\TaskManager
+    arguments:
+      $resourceRepository: '@app.task.repository.redis'

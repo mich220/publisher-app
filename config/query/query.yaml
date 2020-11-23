@@ -1,0 +1,37 @@
+services:
+
+  App\Domain\Query\FetchCommentsByPostIdQuery:
+    alias: App\Infrastructure\Query\MySql\FetchCommentsByPostIdQuery
+  App\Infrastructure\Query\MySql\FetchCommentsByPostIdQuery:
+    arguments:
+      $connection: '@Doctrine\DBAL\Connection'
+
+  App\Domain\Query\FetchPostsQuery:
+    alias: App\Infrastructure\Query\MySql\FetchPostsQuery
+  App\Infrastructure\Query\MySql\FetchPostsQuery:
+    arguments:
+      $connection: '@Doctrine\DBAL\Connection'
+
+  App\Domain\Query\FetchPostByIdQuery:
+    alias: App\Infrastructure\Query\MySql\FetchPostByIdQuery
+  App\Infrastructure\Query\MySql\FetchPostByIdQuery:
+    arguments:
+      $connection: '@Doctrine\DBAL\Connection'
+
+  App\Domain\Query\CountPostsQuery:
+    alias: App\Infrastructure\Query\MySql\CountPostsQuery
+  App\Infrastructure\Query\MySql\CountPostsQuery:
+    arguments:
+      $connection: '@Doctrine\DBAL\Connection'
+
+  App\Domain\Query\FetchPostCommentsQuery:
+    alias: App\Infrastructure\Query\MySql\FetchPostCommentsQuery
+  App\Infrastructure\Query\MySql\FetchPostCommentsQuery:
+    arguments:
+      $connection: '@Doctrine\DBAL\Connection'
+
+  App\Domain\Query\FetchCommentByIdQuery:
+    alias: App\Infrastructure\Query\MySql\FetchCommentByIdQuery
+  App\Infrastructure\Query\MySql\FetchCommentByIdQuery:
+    arguments:
+      $connection: '@Doctrine\DBAL\Connection'

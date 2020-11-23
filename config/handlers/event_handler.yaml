@@ -1,0 +1,15 @@
+services:
+  App\Application\EventSubscriber\:
+    resource: '%kernel.project_dir%/src/Application/EventSubscriber/*'
+    tags:
+      - { name: messenger.message_handler }
+    bind:
+      $taskManager: '@app.task.manager'
+      $logger: '@monolog.logger.event_handlers'
+  App\Application\Exception\ExceptionSubscriber:
+    class: App\Application\Exception\ExceptionSubscriber
+    tags:
+      - { name: kernel.event_subscriber }
+#    bind:
+#      $taskManager: '@App\Application\Service\TaskManager'
+#      $logger: '@monolog.logger.event_handlers'

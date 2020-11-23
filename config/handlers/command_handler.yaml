@@ -1,0 +1,11 @@
+services:
+  App\Application\CommandHandler\:
+    resource: '%kernel.project_dir%/src/Application/CommandHandler/*'
+    tags:
+      - { name: messenger.message_handler }
+    bind:
+      $postRepository: '@app.repository.mysql.post_repository'
+      $postCacheRepository: '@app.repository.redis.post_aggregate_repository'
+      $transactionManager: '@app.transactions.manager.sql'
+      $eventBus: '@domain.message.bus'
+      $logger: '@monolog.logger.handlers'

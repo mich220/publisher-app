@@ -1,0 +1,7 @@
+services:
+  App\Application\Proxy\FetchPostByIdQueryProxy:
+    class: App\Application\Proxy\FetchPostByIdQueryProxy
+    arguments:
+      $postCacheRepository: '@app.repository.redis.post_aggregate_repository'
+      $query: '@App\Domain\Query\FetchPostByIdQuery'
+

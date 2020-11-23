@@ -1,0 +1,18 @@
+services:
+  App\UI\Command\:
+    resource: '%kernel.project_dir%/src/UI/Command/*'
+    tags:
+      - { name: console.command }
+    bind:
+      $commentsBus: '@comments.message.bus'
+      $postCommandService: '@app.service.post.command_service'
+      $commentCommandService: '@app.service.comment.command_service'
+
+  App\UI\Command\Cache\:
+    resource: '%kernel.project_dir%/src/UI/Command/Cache/*'
+    tags:
+      - { name: console.command }
+    bind:
+      $fetchPostsQuery: '@App\Domain\Query\FetchPostsQuery'
+      $countPostsQuery: '@App\Domain\Query\CountPostsQuery'
+      $postCacheRepository: '@app.repository.redis.post_aggregate_repository'

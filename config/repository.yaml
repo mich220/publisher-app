@@ -1,0 +1,9 @@
+services:
+  app.repository.mysql.post_repository:
+    class: App\Infrastructure\Repository\MySql\PostAggregateRepository
+    arguments:
+      $connection: '@Doctrine\DBAL\Connection'
+  app.repository.redis.post_aggregate_repository:
+    class: App\Infrastructure\Cache\Redis\PostCacheRepository
+    arguments:
+      $client: '@app.cache.clients.redis'

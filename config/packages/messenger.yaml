@@ -1,0 +1,93 @@
+services:
+
+  app.posts.serializer:
+    class: 'App\Infrastructure\Messenger\MessageSerializer'
+    arguments:
+      $commandsNamespace: 'App\Application\Command\Post'
+      $targetBus: 'posts.message.bus'
+
+  app.comments.serializer:
+    class: 'App\Infrastructure\Messenger\MessageSerializer'
+    arguments:
+      $commandsNamespace: 'App\Application\Command\Comment'
+      $targetBus: 'comments.message.bus'
+
+  app.domain_events.serializer:
+    class: 'App\Infrastructure\Messenger\MessageSerializer'
+    arguments:
+      $commandsNamespace: 'App\Application\Message\Event\Domain'
+      $targetBus: 'domain.message.bus'
+
+  App\Infrastructure\Messenger\RoutingMiddleware:
+
+framework:
+    messenger:
+      transports:
+
+        posts_transport:
+          dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+          serializer: 'app.posts.serializer'
+          options:
+            prefetch_count: 1
+            exchange:
+              name: external_messages
+              type: topic
+            queues:
+              post_messages:
+                binding_keys: ['Post.*']
+                arguments:
+                  x-ha-policy: 'all'
+          retry_strategy:
+            max_retries: 0
+            delay: 6000
+
+        comments_transport:
+          dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+          serializer: 'app.comments.serializer'
+          options:
+            exchange:
+              name: external_messages
+              type: topic
+            queues:
+              comment_messages:
+                binding_keys: ['Comment.*']
+                arguments:
+                  x-ha-policy: 'all'
+          retry_strategy:
+            max_retries: 0
+            delay: 6000
+
+        domain_events_transport:
+          dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+          serializer: 'app.domain_events.serializer'
+          options:
+            exchange:
+              name: external_messages
+              type: topic
+            queues:
+              domain_messages:
+                binding_keys: ['Domain.*']
+                arguments:
+                  x-ha-policy: 'all'
+          retry_strategy:
+            max_retries: 1
+            delay: 6000
+
+      routing:
+        'App\Application\Message\PostMessage': posts_transport
+        'App\Application\Message\CommentMessage': comments_transport
+        'App\Application\Message\Event\Domain\DomainEvent': domain_events_transport
+
+      default_bus: default.command.bus
+
+      buses:
+        default.command.bus:
+        posts.message.bus:
+          middleware:
+            - 'App\Infrastructure\Messenger\RoutingMiddleware'
+        comments.message.bus:
+          middleware:
+            - 'App\Infrastructure\Messenger\RoutingMiddleware'
+        domain.message.bus:
+          middleware:
+            - 'App\Infrastructure\Messenger\RoutingMiddleware'

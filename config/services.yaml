@@ -1,0 +1,42 @@
+services:
+    _defaults:
+        autowire: false
+        autoconfigure: false
+
+    app.validator:
+      class: App\Application\Service\Validator
+
+    app.service.post.command_service:
+      class: App\Application\Service\PostCommandService
+      arguments:
+        $taskManager: '@app.task.manager'
+        $messageBus: '@posts.message.bus'
+
+    app.service.comment.command_service:
+      class: App\Application\Service\CommentCommandService
+      arguments:
+        $taskManager: '@app.task.manager'
+        $messageBus: '@comments.message.bus'
+
+    App\UI\Controller\:
+        autowire: true
+        autoconfigure: true
+        resource: '%kernel.project_dir%/src/UI/Controller/'
+        tags: ['controller.service_arguments']
+        bind:
+          $postCommandService: '@app.service.post.command_service'
+          $commentCommandService: '@app.service.comment.command_service'
+          $validator: '@app.validator'
+          $taskManager: '@app.task.manager'
+
+    app.transactions.manager.sql:
+      class: App\Application\Service\SqlTransactionManager
+      arguments:
+        $connection: '@Doctrine\DBAL\Connection'
+
+imports:
+  - { resource: cache.yaml }
+  - { resource: query/* }
+  - { resource: command.yaml }
+  - { resource: repository.yaml }
+  - { resource: handlers/* }
