@@ -53,13 +53,12 @@
 <h4>GET /comments</h4>
 <ul>
     <li>get list of comments</li>
-    <li>paginated by default</li>
+    <li>paginated by default - todo</li>
     <li>optional query params: <b>int|string page</b> and <b>int|string limit</b></li>
 </ul>
 <h4>GET /posts/{postId}/comments/{commentId}</h4>
 <ul>
     <li>get specific comment</li>
-    <li>if not found -> returns http 404</li>
     <li>query params: <b>int|string page</b> and <b>int|string limit</b></li>
 </ul>   
 <h4>POST /posts/{postId}/comments</h4>
