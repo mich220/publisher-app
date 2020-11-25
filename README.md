@@ -71,14 +71,14 @@
 <h4>POST /posts/{postId}/comments/{commentId}</h4>
 <ul>
     <li>update specific comment</li>
-    <li>Authorization API key, using query param e.g: <b></b></li>
+    <li>Authorization API key, using query param<b></b></li>
     <li>returns json with redirect link </li>
     <li>required fields: <b>int|string postId</b> <b>int|string commentId</b>
 </ul>
 <h4>DELETE /posts/{postId}/comments/{commentId}</h4>
 <ul>
     <li>delete specific comment</li>
-    <li>Authorization API key, using query param e.g: <b></b></li>
+    <li>Authorization API key, using query param<b></b></li>
     <li>query params: <b>int|string postI</b> and <b>int|string commentId</b>
 </ul>
 
